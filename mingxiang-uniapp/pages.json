@@ -1,0 +1,462 @@
+/*
+	公司信息（仅注释，不展示、不影响运行）
+	产品官网：https://www.xiansqx.cn/
+	商业授权 / 体验全套：微信 maxdlln，备注【旅游】
+	微信同电话：13895585204
+	uni-app QQ 技术交流群：592576277
+	学习资料：公众号【码兄】回复【uniApp】
+	以上项目仅供学习使用、不可商用
+
+	更多产品：
+	- 省钱兄淘宝客 https://sqx.xiansqx.com/
+	- 省钱兄自营商城 http://games.xiansqx.com
+	- 省钱兄任务悬赏 http://rw.xiansqx.com
+	- 省钱兄同城跑腿 https://pt.xiansqx.com/
+	- 省钱兄同城外卖 https://wm.xiansqx.com/
+	- 省钱兄游戏陪玩 https://pw.xiansqx.com/
+	- 省钱兄抖客 https://dk.xiansqx.com/
+	- 省钱兄上门洗车 https://xc.xiansqx.com/
+
+	现成方案：多商户电商、蛋糕店点餐、单商户电商、O2O 核销、淘宝客、任务、分销会员、社区团购、拼多多/京东返利、支付、好差评、积分、校园跑腿、任务兼职、知识付费、外卖跑腿/点餐、短视频电商、众包接单、任务悬赏、跨境电商、电竞比赛、霸王餐、外卖红包、同城/校园外卖、陪玩、同城跑腿、社区兼职、家政、预约、月嫂、上门洗车、线上云酒馆、鲜花店预约、上门洗鞋、露营基地预约等。
+	承接小程序、微信公众号、APP、软著商标与官网开发。
+*/
+{
+	"easycom": {
+		"autoscan": true,
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		},
+		{
+			"path": "pages/my/userinfo",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "我的"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/my/invitationUser",
+			"style": {
+				"navigationBarTitleText": "邀请好友"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/index/addCj",
+			"style": {
+				"navigationBarTitleText": "添加混音场景"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/index/mmCj",
+			"style": {
+				"navigationBarTitleText": "添加混音场景"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/public/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/public/loginphone",
+			"style": {
+				"navigationBarTitleText": "登录"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/public/register",
+			"style": {
+				"navigationBarTitleText": "注册"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/public/forgetPwd",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/public/resetPwd",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		},
+		{
+			"path": "pages/explore_ts/search",
+			"style": {
+				"navigationBarTitleText": "搜索"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "pages/explore_ts/explore_ts",
+			"style": {
+				"navigationBarTitleText": "探索"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		},
+		{
+			"path": "pages/webView/webView",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}
+	],
+	"subPackages": [{
+		"root": "subpackage",
+		"pages": [{
+			"path": "index/sleep_yj",
+			"style": {
+				"navigationBarTitleText": "夜间睡眠"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "index/indexMore",
+			"style": {
+				"navigationBarTitleText": ""
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "index/zhuanzhu_sz",
+			"style": {
+				"navigationBarTitleText": "专注时钟"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "index/zhengnian_hx",
+			"style": {
+				"navigationBarTitleText": "正念呼吸"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "index/rijian_xx",
+			"style": {
+				"navigationBarTitleText": "日间小憩"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "index/sleep_music",
+			"style": {
+				"navigationBarTitleText": "夜间睡眠"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "courseInfo/courseDetail",
+			"style": {
+				"navigationBarTitleText": "课程详情"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "courseInfo/course_bf",
+			"style": {
+				"navigationBarTitleText": "课程详情"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}]
+	}, {
+		"root": "my",
+		"pages": [{
+				"path": "msg/msgList",
+				"style": {
+					"navigationBarTitleText": "消息列表"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "tongji/myLike",
+				"style": {
+					"navigationBarTitleText": "我的喜欢"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "vip/vip",
+				"style": {
+					"navigationBarTitleText": "会员中心"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "toadyDataTj/index",
+				"style": {
+					"navigationBarTitleText": "今日数据",
+					"navigationStyle": "custom",
+					"enablePullDownRefresh": true
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "tongji/zj_bofang",
+				"style": {
+					"navigationBarTitleText": "最近播放"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "msg/index",
+				"style": {
+					"navigationBarTitleText": "消息"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "team/team",
+				"style": {
+					"navigationBarTitleText": "推广中心"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			},
+			{
+				"path": "team/earnings",
+				"style": {
+					"navigationBarTitleText": "我的收益"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}, {
+				"path": "wallet/wallet",
+				"style": {
+					"navigationBarTitleText": "提现"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			},
+			{
+				"path": "wallet/zhifubao",
+				"style": {
+					"navigationBarTitleText": "提现账号"
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			},
+			{
+				"path": "wallet/cashList",
+				"style": {
+					"navigationBarTitleText": "提现记录",
+					"enablePullDownRefresh": true
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			},
+			{
+				"path": "wallet/mymoneydetail",
+				"style": {
+					"navigationBarTitleText": "钱包明细",
+					"enablePullDownRefresh": true
+						// #ifdef H5
+						,
+					"navigationStyle": "custom"
+					// #endif 
+				}
+			}
+		]
+	}, {
+		"root": "settingViews",
+		"pages": [{
+			"path": "xieyi",
+			"style": {
+				"navigationBarTitleText": ""
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "about",
+			"style": {
+				"navigationBarTitleText": "关于我们"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "setting",
+			"style": {
+				"navigationBarTitleText": "设置中心"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "cancelAgreement",
+			"style": {
+				"navigationBarTitleText": "用户注销协议"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "logOff",
+			"style": {
+				"navigationBarTitleText": "注销账号"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "privacyPolicy",
+			"style": {
+				"navigationBarTitleText": "隐私政策"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "upPwd",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}, {
+			"path": "kefu",
+			"style": {
+				"navigationBarTitleText": "联系客服"
+					// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif 
+			}
+		}]
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "码兄冥想",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff"
+	},
+	"tabBar": {
+		"color": "#333333",
+		"selectedColor": "#4C6CD3",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "/static/image/tabbar/index.png",
+			"selectedIconPath": "/static/image/tabbar/index_.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/explore_ts/explore_ts",
+			"iconPath": "/static/image/tabbar/msg.png",
+			"selectedIconPath": "/static/image/tabbar/msg_.png",
+			"text": "探索"
+		}, {
+			"pagePath": "pages/my/my",
+			"iconPath": "/static/image/tabbar/my.png",
+			"selectedIconPath": "/static/image/tabbar/my_.png",
+			"text": "我的"
+		}]
+	},
+	"uniIdRouter": {}
+}

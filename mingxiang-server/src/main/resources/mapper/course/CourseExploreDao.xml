@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseExploreDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseExplore">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="exploreName" column="explore_name" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,explore_name,parent_id,
+        status,remark,create_time
+    </sql>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.app.dao.VipDetailsDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.app.entity.VipDetails">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="vipMonthCount" column="vip_month_count" jdbcType="INTEGER"/>
+            <result property="money" column="money" jdbcType="DECIMAL"/>
+            <result property="vipName" column="vip_name" jdbcType="VARCHAR"/>
+            <result property="discountMoney" column="discount_money" jdbcType="DECIMAL"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isEnable" column="is_enable" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vip_month_count,money,
+        vip_name,discount_money,update_time,
+        is_enable
+    </sql>
+</mapper>

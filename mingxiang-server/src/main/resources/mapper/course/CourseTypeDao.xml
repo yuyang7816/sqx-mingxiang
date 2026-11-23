@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseTypeDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseType">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="typeName" column="type_name" jdbcType="VARCHAR"/>
+            <result property="typeStatus" column="type_status" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type_name,type_status,
+        remark,parent_id,delete_flag,
+        create_by,create_time,update_by,
+        update_time
+    </sql>
+    <select id="selectByParentId" resultType="com.sqx.modules.course.entity.CourseType">
+        select <include refid="Base_Column_List"/>
+        from course_type
+        where parent_id = #{parentId}
+        and delete_flag = 0
+    </select>
+    <select id="selectListByCourse" resultType="com.sqx.modules.course.entity.CourseType">
+        select ct.*
+        from course_type ct
+        where ct.delete_flag = 0 and ct.parent_id = 0
+    </select>
+    <select id="selectByUserId" resultType="com.sqx.modules.course.entity.CourseType">
+        select ct.*
+        from course_type ct
+        left join course_info ci on ci.type_id = ct.id
+        left join course_learn cl on cl.course_id = ci.id
+        where ct.delete_flag = 0 and ct.parent_id = 0
+    </select>
+    <select id="selectByTypeId" resultType="com.sqx.modules.course.entity.CourseType">
+        select DATE(cl.create_time) as meditationTime,
+            ct.id,ct.type_name,ct.type_status,
+            ct.remark,ct.level,ct.parent_id,ct.delete_flag,
+            ct.create_by,ct.create_time,ct.update_by,
+            ct.update_time,ci.cover as coverImage,ci.id as courseId
+        from course_learn cl
+        join course_info ci on ci.id = cl.course_id
+        join course_type ct on ct.id = ci.type_id
+        where cl.user_id = #{userId}
+        and ct.delete_flag = 0 and cl.delete_flag = 0
+        and cl.type = 0
+        group by ct.id,DATE(cl.create_time)
+        order by cl.create_time desc
+    </select>
+</mapper>

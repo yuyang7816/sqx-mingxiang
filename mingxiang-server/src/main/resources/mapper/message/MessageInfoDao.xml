@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sqx.modules.message.dao.MessageInfoDao">
+
+    <update id="updateSendState">
+          update message_info s set s.is_see=2 where s.user_id=#{userId}
+    </update>
+    <select id="find" resultType="com.sqx.modules.message.entity.MessageInfo">
+        select s.id,s.content,s.create_at,
+        s.image,s.is_see,s.send_state,
+        s.send_time,s.`state`,s.title,
+        s.url,s.`type`,s.platform,
+        s.user_id,u2.user_name as userName,s.audit_content,
+        s.status,s.by_user_id,s.platform_id,
+        s.shop_id,s.data_id,s.phone,u.user_name as byUserName from message_info s
+        left join tb_user u on s.by_user_id=u.user_id
+        left join tb_user u2 on s.user_id=u2.user_id
+        <where>
+            <if test="state != null">
+                and s.`state`=#{state}
+            </if>
+        </where>
+        order by s.id desc
+    </select>
+    <select id="findType" resultType="com.sqx.modules.message.entity.MessageInfo">
+        select s.id,s.content,s.create_at,
+        s.image,s.is_see,s.send_state,
+        s.send_time,s.`state`,s.title,
+        s.url,s.`type`,s.platform,
+        s.user_id,u2.user_name as userName,s.audit_content,
+        s.status,s.by_user_id,s.platform_id,
+        s.shop_id,s.data_id,s.phone,u.user_name as byUserName from message_info s
+        left join tb_user u on s.by_user_id=u.user_id
+        left join tb_user u2 on s.user_id=u2.user_id
+        <where>
+            <if test="type != null">
+                and s.`type`=#{type}
+            </if>
+        </where>
+        order by s.id desc
+    </select>
+    <select id="findTypeByUserId" resultType="com.sqx.modules.message.entity.MessageInfo">
+        select s.id,s.content,s.create_at,
+        s.image,s.is_see,s.send_state,
+        s.send_time,s.`state`,s.title,
+        s.url,s.`type`,s.platform,
+        s.user_id,u2.user_name as userName,s.audit_content,
+        s.status,s.by_user_id,s.platform_id,
+        s.shop_id,s.data_id,s.phone,u.user_name as byUserName from message_info s
+        left join tb_user u on s.by_user_id=u.user_id
+        left join tb_user u2 on s.user_id=u2.user_id
+        <where>
+            <if test="type != null">
+                and s.`state`=#{type}
+            </if>
+            <if test="userId != null">
+                and s.`user_id`=#{userId}
+            </if>
+        </where>
+        order by s.id desc
+    </select>
+
+
+</mapper>

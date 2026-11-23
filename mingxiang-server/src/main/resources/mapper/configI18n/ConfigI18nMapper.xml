@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.configI18n.dao.ConfigI18nDao">
+
+
+    <select id="getLanguageList" resultType="java.util.HashMap">
+        select ci.language,ci.remark from config_i18n ci
+        left join  language_type t on t.language=ci.language
+        where t.is_enable=1
+        <if test="showType!=null">
+            and ci.show_type = #{showType}
+        </if>
+        group by ci.language
+
+    </select>
+    <select id="getConfigI18nGroupList" resultType="com.sqx.modules.configI18n.entity.ConfigI18n">
+        SELECT * FROM `config_i18n`
+        <where>
+            <if test="configI18n.language!=null and configI18n.language!=''">
+                and language like concat("%",#{configI18n.language},"%")
+            </if>
+            <if test="configI18n.primaryKey!=null and configI18n.primaryKey!=''">
+                and primary_key like concat("%",#{configI18n.primaryKey},"%")
+            </if>
+            <if test="configI18n.languageValue!=null and configI18n.languageValue!=''">
+                and language_value like concat("%",#{configI18n.languageValue},"%")
+            </if>
+            <if test="configI18n.showType!=null">
+                and show_type = #{configI18n.showType}
+            </if>
+        </where>
+
+        GROUP BY primary_key
+        ORDER BY create_time DESC
+    </select>
+    <select id="needTranslateList" resultType="com.sqx.modules.configI18n.entity.ConfigI18n">
+        SELECT *
+        FROM `config_i18n` c
+        WHERE c.`language` = #{language}
+          AND show_type = #{showType}
+          AND c.`primary_key` NOT IN
+              (SELECT `primary_key`
+               FROM `config_i18n` c2
+               WHERE c2.`language` = #{toLanguage})
+    </select>
+</mapper>

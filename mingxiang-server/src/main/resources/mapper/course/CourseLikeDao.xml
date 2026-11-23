@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseLikeDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseLike">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="courseId" column="course_id" jdbcType="INTEGER"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,course_id,
+        delete_flag
+    </sql>
+    <delete id="deleteByCourseId">
+        delete
+        from course_like
+        where course_id = #{courseId}
+          and user_id = #{userId}
+    </delete>
+</mapper>

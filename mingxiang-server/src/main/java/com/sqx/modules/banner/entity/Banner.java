@@ -1,0 +1,71 @@
+package com.sqx.modules.banner.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.io.Serializable;
+/**
+ * @author fang
+ * @date 2020/7/9
+ */
+@Data
+@TableName("banner")
+@AllArgsConstructor
+@NoArgsConstructor
+public class Banner implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    /**
+     * banner图id
+     */
+    @TableId(type = IdType.INPUT)
+    private Long id;
+
+    /**
+     * 创建时间
+     */
+    private String createTime;
+
+    /**
+     * 名称
+     */
+    private String name;
+
+    /**
+     * 图片地址
+     */
+    private String imageUrl;
+
+    /**
+     * 状态 1正常 2隐藏
+     */
+    private Integer state;
+  /**
+     * 状态 1正常 2隐藏
+     */
+    private Integer type;
+
+    /**
+     * 分类 1首页 2号店
+     */
+    private Integer classify;
+
+    /**
+     * 跳转地址
+     */
+    private String url;
+
+    /**
+     * 顺序
+     */
+    private Integer sort;
+
+    /**
+     * 描述
+     */
+    private String describes;
+
+}

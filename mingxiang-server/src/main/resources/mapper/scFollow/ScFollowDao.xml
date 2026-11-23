@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.scFollow.dao.ScFollowDao">
+    <select id="getMyDataFollowCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM sc_follow f,
+             sc_table_data d,
+             tb_user u
+        WHERE f.data_id = d.data_id
+          AND d.user_id = u.user_id
+          and d.user_id = #{userId}
+    </select>
+    <select id="getMyFollowList" resultType="com.sqx.modules.app.entity.UserEntity">
+        SELECT u.*
+        FROM sc_follow f,
+             tb_user u
+        WHERE u.user_id = #{userId}
+          AND u.user_id = f.user_id
+    </select>
+    <select id="getMyFansList" resultType="com.sqx.modules.app.entity.UserEntity">
+        SELECT u.*
+        FROM sc_follow f,
+             tb_user u,
+             `sc_shop` s
+        WHERE s.shop_id = f.`shop_id`
+          AND f.`user_id` = u.`user_id`
+          and f.type =2
+          AND s.`user_id` = #{userId}
+        GROUP BY u.user_id
+        order by create_time desc
+    </select>
+    <select id="getMyFansListCount" resultType="java.lang.Integer">
+        SELECT count(0)
+        FROM sc_follow f,
+             tb_user u,
+             `sc_shop` s
+        WHERE s.shop_id = f.`shop_id`
+          AND f.`user_id` = u.`user_id`
+          AND s.`user_id` = #{userId}
+
+
+    </select>
+
+
+</mapper>

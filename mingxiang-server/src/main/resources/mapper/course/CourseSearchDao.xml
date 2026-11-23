@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseSearchDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseSearch">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="courseId" column="course_id" jdbcType="INTEGER"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="courseWord" column="course_word" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,course_id,delete_flag,
+        create_by,create_time
+    </sql>
+    <insert id="insertBatch">
+        insert into course_search (course_id,create_time,course_name,course_word) VALUES
+        <foreach collection="courseSearchList" item="item" separator=",">
+            (#{item.courseId},#{item.createTime},#{item.courseName},#{item.courseWord})
+        </foreach>
+    </insert>
+    <select id="selectByHOT" resultType="com.sqx.modules.course.entity.CourseSearch">
+        SELECT ci.id as id,ci.course_name as courseName, COUNT(*) AS searchCount
+        FROM course_search cs
+        LEFT JOIN course_info ci on ci.id = cs.course_id and ci.delete_flag = 0
+        WHERE cs.delete_flag = 0
+        GROUP BY cs.course_id
+        ORDER BY searchCount DESC
+            LIMIT 7
+    </select>
+</mapper>

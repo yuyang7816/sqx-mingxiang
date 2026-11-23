@@ -1,0 +1,31 @@
+package com.sqx.modules.invite.service;
+
+
+import com.sqx.common.utils.PageUtils;
+import com.sqx.modules.app.entity.UserEntity;
+
+import java.util.Date;
+
+public interface InviteService {
+
+    PageUtils selectInviteList(int page, int limit, Integer state, Long userId);
+
+    Integer selectInviteCount(Integer state,Long userId);
+
+    Double selectInviteSum(Integer state,Long userId);
+
+
+    PageUtils selectInviteUser(int page,int limit,Long userId,Integer state);
+
+    Integer selectInviteByUserIdCountNotTime(Long userId);
+
+    Integer selectInviteByUserIdCount(Long userId, Date startTime, Date endTime);
+
+    Double selectInviteByUserIdSum(Long userId, Date startTime,Date endTime);
+
+    Double sumInviteMoney(String time,Integer flag);
+
+    PageUtils inviteAnalysis(int page,int limit, String time, Integer flag);
+
+
+}

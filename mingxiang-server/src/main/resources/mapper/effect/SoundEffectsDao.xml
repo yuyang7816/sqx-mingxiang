@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.effect.dao.SoundEffectsDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.effect.entity.SoundEffects">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="effectsName" column="effects_name" jdbcType="VARCHAR"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,effects_name,sort,
+        file_path,create_by,create_time,update_bym,update_time,delete_flag
+    </sql>
+    <select id="getSoundEffectsByUserId" resultType="com.sqx.modules.effect.entity.SoundEffects">
+        select se.effects_name,se.sort,se.file_path,se.create_time
+        from sound_and_user sau
+        left join sound_effects se on sau.effects_id = se.id
+        where sau.user_id = #{userId} and se.delete_flag = 0
+    </select>
+    <select id="getSoundEffectsByUserChoose" resultType="com.sqx.modules.effect.entity.SoundEffects">
+        SELECT se.id,
+               se.cover,
+               se.bg_img,
+               se.create_time, se.effects_name, se.sort,
+               se.file_path,
+               CASE WHEN sau.effects_id IS NOT NULL THEN 1 ELSE 0 END AS checked -- 新增字段，1表示选定，0表示未选定
+        FROM sound_effects se
+        LEFT JOIN sound_and_user sau ON se.id = sau.effects_id AND sau.user_id = #{userId} -- 修改JOIN条件，限定user_id
+        WHERE se.delete_flag = 0
+        ORDER BY se.sort
+    </select>
+
+
+</mapper>

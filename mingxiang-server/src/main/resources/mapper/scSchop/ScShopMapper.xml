@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.shop.dao.ScShopDao">
+
+    <select id="getShopList" resultType="com.sqx.modules.shop.entity.ScShop">
+        SELECT sc.*,
+        (st_distance (POINT (sc.shop_lng,sc.shop_lat),POINT(#{lng},#{lat}) ) *111195) AS distance,
+        u.user_name
+        FROM sc_shop sc,
+        tb_user u
+        where sc.status=2
+        and is_enable = 1
+        and sc.user_id = u.user_id
+        <if test="shopName!=null and shopName!=''">
+            and sc.shop_name like concat("%",#{shopName},"%")
+        </if>
+        <if test="city!=null and city!=''">
+            and sc.city like concat("%",#{city},"%")
+        </if>
+
+        <choose>
+            <when test="screen==1">
+                order by browse_count desc,is_recommend asc
+            </when>
+            <when test="screen==2">
+                order by create_time desc,is_recommend asc
+            </when>
+            <when test="screen==3">
+                order by distance asc,is_recommend asc
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+
+    </select>
+    <select id="getAdminShopList" resultType="com.sqx.modules.shop.entity.ScShop">
+        SELECT sc.*,
+        u.user_name,
+        u.phone
+        FROM sc_shop sc,
+        tb_user u
+        where sc.user_id = u.user_id
+        <if test="status!=null">
+            and sc.status = #{status}
+        </if>
+        <if test="shopName!=null and shopName!=''">
+            and sc.shop_name like concat("%",#{shopName},"%")
+        </if>
+        <if test="userName!=null and userName!=''">
+            and u.user_name like concat("%",#{userName},"%")
+        </if>
+        <if test="city!=null and city!=''">
+            and sc.city like concat("%",#{city},"%")
+        </if>
+        <if test="phone!=null and phone!=''">
+            and u.phone like concat("%",#{phone},"%")
+        </if>
+        order by sc.create_time desc
+    </select>
+    <select id="getShopInfoById" resultType="com.sqx.modules.shop.entity.ScShop">
+        SELECT sc.*,
+        u.user_name,
+
+        (st_distance(POINT(sc.shop_lng, sc.shop_lat), POINT(#{lng}, #{lat})) * 111195) AS distance,
+        u.phone
+        <if test="userId!=null">
+            ,if((select count(0) from sc_follow c where c.user_id = #{userId} and type =2 and c.shop_id =
+            #{shopId})>0,1,0) as
+            isFollow
+        </if>
+        FROM sc_shop sc,
+        tb_user u
+        where sc.user_id = u.user_id
+        and sc.shop_id = #{shopId}
+    </select>
+</mapper>

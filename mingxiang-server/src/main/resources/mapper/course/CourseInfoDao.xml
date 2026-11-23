@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseInfo">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="typeId" column="type_id" jdbcType="INTEGER"/>
+        <result property="courseDesc" column="course_desc" jdbcType="VARCHAR"/>
+        <result property="courseStatus" column="course_status" jdbcType="INTEGER"/>
+        <result property="mentor" column="mentor" jdbcType="VARCHAR"/>
+        <result property="mentorPhoto" column="mentor_photo" jdbcType="VARCHAR"/>
+        <result property="mentorIntroduction" column="mentor_introduction" jdbcType="VARCHAR"/>
+        <result property="cover" column="cover" jdbcType="VARCHAR"/>
+        <result property="backgroundImage" column="background_image" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,course_name,type_id,
+        course_desc,course_status,mentor,
+        mentor_photo,mentor_introduction,cover,
+        background_image,create_by,
+        create_time,update_by,update_time,
+        delete_flag
+    </sql>
+    <select id="selectByDetail" resultType="com.sqx.modules.course.entity.vo.CourseInfoVO">
+        select ct.type_name as typeName, ci.*
+        from course_info ci
+                 left join course_type ct on ci.type_id = ct.id and ct.delete_flag = 0
+        where ci.id = #{id}
+          and ci.delete_flag = 0
+    </select>
+    <select id="selectByCourseId" resultType="com.sqx.modules.course.entity.vo.MentorVO">
+        select ci.mentor              as mentor,
+               ci.mentor_photo        as mentorPhoto,
+               ci.mentor_introduction as mentorIntroduction
+        from course_info ci
+        where ci.id = #{id}
+          and ci.delete_flag = 0
+    </select>
+    <select id="selectCourseInfoList" resultType="com.sqx.modules.course.entity.CourseInfo">
+        select ci.*,ct.type_name as typeName from course_info ci
+        left join course_type ct on ci.type_id = ct.id
+        where ci.delete_flag = 0
+        and ct.delete_flag = 0
+        <if test="courseName != null and courseName != ''">
+            and ci.course_name like concat('%',#{courseName},'%')
+        </if>
+        group by ci.type_id
+    </select>
+    <select id="selectByUserId" resultType="com.sqx.modules.course.entity.vo.CourseInfoVO">
+        select ci.*
+        from course_learn cl
+                 left join chapter_info cai on cai.id = cl.chapter_id
+                 left join course_info ci on ci.id = cai.course_id
+        where cl.user_id = #{userId}
+          and ci.delete_flag = 0
+        order by cl.create_time desc
+    </select>
+    <select id="selectLists" resultType="com.sqx.modules.course.entity.CourseInfo">
+        select ci.*,ct.type_name as typeName,ct.remark as typeRemark,
+        ce1.explore_name as exploreName,
+        ce2.explore_name as exploreParentName,
+        GROUP_CONCAT(DISTINCT cl.label_name SEPARATOR ',') AS labelName,
+        GROUP_CONCAT(DISTINCT cl.id SEPARATOR ',') AS labelIds
+        from course_info ci
+        left join course_type ct on ci.type_id = ct.id
+        left join course_and_label cal on cal.course_id = ci.id
+        left join course_label cl on cal.label_id = cl.id
+        left join course_explore ce1 on ci.explore_id = ce1.id
+        left join course_explore ce2 on ci.explore_parent_id = ce2.id
+        where ci.delete_flag = 0
+        <if test="courseName != null and courseName != ''">
+            and ci.course_name like concat('%',#{courseName},'%')
+        </if>
+        <if test="typeName != null and typeName != ''">
+            and ct.type_name like concat('%',#{typeName},'%')
+        </if>
+        <if test="courseTitle != null and courseTitle != ''">
+            and ci.course_title like concat('%',#{courseTitle},'%')
+        </if>
+        <if test="mentorTitle != null and mentorTitle != ''">
+            and ci.mentor_title like concat('%',#{mentorTitle},'%')
+        </if>
+        <if test="mentor != null and mentor != ''">
+            and ci.mentor like concat('%',#{mentor},'%')
+        </if>
+        <if test="courseStatus != null">
+            and ci.course_status = #{courseStatus}
+        </if>
+        GROUP BY ci.id, ct.type_name, ct.remark
+        ORDER BY ci.create_time desc
+    </select>
+
+</mapper>
+

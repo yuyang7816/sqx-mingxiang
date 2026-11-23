@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.ChapterInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.ChapterInfo">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="courseId" column="course_id" jdbcType="INTEGER"/>
+            <result property="chapterName" column="chapter_name" jdbcType="VARCHAR"/>
+            <result property="chapterNum" column="chapter_num" jdbcType="INTEGER"/>
+            <result property="chapterUrl" column="chapter_url" jdbcType="VARCHAR"/>
+            <result property="chapterDuration" column="chapter_duration" jdbcType="VARCHAR"/>
+            <result property="chapterPrice" column="chapter_price" jdbcType="DECIMAL"/>
+            <result property="chapterCharge" column="chapter_charge" jdbcType="INTEGER"/>
+            <result property="chapterStatus" column="chapter_status" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        chapter_id,course_id,chapter_name,
+        chapter_num,chapter_url,chapter_duration,
+        chapter_price,chapter_charge,chapter_status,
+        create_by,create_time,update_by,
+        update_time,delete_flag
+    </sql>
+
+    <select id="selectByCourseId" resultType="com.sqx.modules.course.entity.vo.ChapterInfoVO">
+        select * from chapter_info
+        where course_id = #{courseId}
+        and delete_flag = 0 and chapter_status = 0
+    </select>
+</mapper>

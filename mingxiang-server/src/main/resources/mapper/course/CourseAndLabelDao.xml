@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseAndLabelDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseAndLabel">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="labelId" column="label_id" jdbcType="INTEGER"/>
+            <result property="courseId" column="course_id" jdbcType="INTEGER"/>
+            <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,label_id,course_id,
+        delete_flag
+    </sql>
+    <insert id="insertBatch">
+        insert into course_and_label (label_id,course_id) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.labelId},#{item.courseId})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.course.dao.CourseLearnDao">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.course.entity.CourseLearn">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="chapterId" column="chapter_id" jdbcType="INTEGER"/>
+        <result property="meditationId" column="meditation_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="completionStatus" column="completion_status" jdbcType="INTEGER"/>
+        <result property="learnDate" column="learn_date" jdbcType="DATE"/>
+        <result property="learnTime" column="learn_time" jdbcType="TIME"/>
+        <result property="durationTime" column="duration_time" jdbcType="INTEGER"/>
+        <result property="alarmStartTime" column="alarm_start_time" jdbcType="TIMESTAMP"/>
+        <result property="alarmEndTime" column="alarm_end_time" jdbcType="TIMESTAMP"/>
+        <result property="deleteFlag" column="delete_flag" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,chapter_id,meditation_id,
+        user_id,remark,completion_status,
+        learn_date,learn_time,duration_time,
+        alarm_start_time,alarm_end_time,delete_flag,
+        create_by,create_time,update_by,
+        update_time
+    </sql>
+    <select id="selectByMeditationMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS meditationMonthCount
+        FROM course_learn
+        WHERE learn_date &gt;= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND learn_date &lt; DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)
+          AND delete_flag = 0
+          and user_id = #{userId}
+          and type = 0
+    </select>
+    <select id="selectBySleepMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT SUM(
+                       CASE
+                           WHEN DATE (alarm_start_time) = DATE (alarm_end_time) THEN 1
+                       ELSE
+                       DATEDIFF(
+                               DATE_FORMAT(alarm_end_time, '%Y-%m-%d'),
+                               DATE_FORMAT(alarm_start_time, '%Y-%m-%d')
+                       ) + 1
+                       END
+               ) AS sleepMonthCount
+        FROM course_learn
+        WHERE ((
+                           alarm_start_time &gt;= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+                       AND alarm_end_time &lt;= IF(
+                               DATE_ADD(CURDATE(), INTERVAL 1 DAY) &lt;
+                               DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH),
+                               DATE_ADD(CURDATE(), INTERVAL 1 DAY),
+                               DATE_FORMAT(DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH), '%Y-%m-%d')
+                                                )
+                   )
+            OR (
+                           alarm_start_time &gt; DATE_FORMAT(CURDATE(), '%Y-%m-01')
+                       AND alarm_end_time &gt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+                   ))
+          AND delete_flag = 0
+          AND user_id = #{userId}
+          AND type = 1
+    </select>
+    <select id="selectByFocusMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS focusMonthCount
+        FROM course_learn
+        WHERE learn_date &gt;= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND learn_date &lt; DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)
+          AND delete_flag = 0
+          and user_id = #{userId}
+          and type = 2
+    </select>
+    <select id="selectByUserId" resultType="com.sqx.modules.course.entity.CourseLearn">
+        select count(type) as typeCount,ifNull(sum(duration_today),0) as durationToday
+        from course_learn
+        where user_id = #{userId}
+        and delete_flag = 0
+        and type = 0
+        <if test="currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+    </select>
+    <select id="selectSleepByUserId" resultType="com.sqx.modules.course.entity.CourseLearn">
+        select count(type) as typeCount,ifNull(sum(duration_today),0) as durationToday
+        from course_learn
+        where user_id = #{userId}
+        and delete_flag = 0
+        and type = 1
+        <if test="currentDate != null and currentDate !=''">
+            and DATE_FORMAT(alarm_start_time,'%Y-%m-%d') = #{currentDate}
+        </if>
+    </select>
+    <select id="selectFocusByUserId" resultType="com.sqx.modules.course.entity.CourseLearn">
+        select count(type) as typeCount,ifNull(sum(duration_time),0) as durationToday
+        from course_learn
+        where user_id = #{userId}
+        and delete_flag = 0
+        and type = 2
+        <if test="currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+    </select>
+    <select id="selectByAllMeditationMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS meditationMonthCount
+        FROM course_learn
+        WHERE delete_flag = 0
+          and type = 0
+          and user_id = #{userId}
+    </select>
+    <select id="selectByAllSleepMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT SUM(CASE
+                       WHEN DATE (alarm_start_time) = DATE (alarm_end_time) THEN 1
+                   ELSE DATEDIFF(
+                           DATE(alarm_end_time) + INTERVAL 1 DAY,
+                DATE(alarm_start_time)
+            )
+                   END
+               ) AS sleepDay
+        FROM course_learn
+        WHERE delete_flag = 0
+          AND type = 1
+          AND user_id = #{userId}
+    </select>
+    <select id="selectByAllFocusMonth" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS focusMonthCount
+        FROM course_learn
+        WHERE delete_flag = 0
+          and type = 2
+          and user_id = #{userId}
+    </select>
+    <select id="selectByMeditationCount" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS meditationCount,
+        FLOOR(COALESCE(SUM(duration_time), 0)) AS meditationTime,
+        COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS meditationDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 0
+        AND user_id = #{userId}
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectBySleepCount" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS sleepCount,
+        FLOOR(COALESCE(SUM(COALESCE(duration_today, 0) + COALESCE(duration_tomorrow, 0)),0)) AS sleepTime,
+        COUNT(DISTINCT DATE (alarm_start_time)) +
+        COUNT(DISTINCT DATE (alarm_end_time)) -
+        COUNT(DISTINCT CASE WHEN DATE (alarm_start_time) = DATE (alarm_end_time) THEN DATE (alarm_start_time)
+        END) AS sleepDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 1
+        AND user_id = #{userId}
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectByFocusCount" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS focusCount,
+        FLOOR(COALESCE(SUM(duration_time), 0)) AS focusTime,
+        COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS focusDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 2
+        AND user_id = #{userId}
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectByMeditationCount1" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS meditationCount,
+        FLOOR(COALESCE(SUM(duration_time), 0)) AS meditationTime,
+        COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS meditationDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 0
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectBySleepCount1" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS sleepCount,
+        FLOOR(COALESCE(SUM(COALESCE(duration_today, 0) + COALESCE(duration_tomorrow, 0)),0)) AS sleepTime,
+        COUNT(DISTINCT DATE (alarm_start_time)) +
+        COUNT(DISTINCT DATE (alarm_end_time)) -
+        COUNT(DISTINCT CASE WHEN DATE (alarm_start_time) = DATE (alarm_end_time) THEN DATE (alarm_start_time)
+        END) AS sleepDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 1
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectByFocusCount1" resultType="com.sqx.modules.course.entity.vo.CourseLearnCount">
+        SELECT COUNT(*) AS focusCount,
+        FLOOR(COALESCE(SUM(duration_time), 0)) AS focusTime,
+        COUNT(DISTINCT DATE_FORMAT(learn_date, '%Y-%m-%d')) AS focusDay
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 2
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectByMeditationCount2" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS meditationCount
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 0
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectBySleepCount2" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS sleepCount
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 1
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+    <select id="selectByFocusCount2" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS focusCount
+        FROM course_learn
+        WHERE delete_flag = 0
+        AND type = 2
+        <if test="type == null and currentDate != null and currentDate !=''">
+            and learn_date = #{currentDate}
+        </if>
+        <if test="type == 1">
+            and date_format(learn_date,'%Y-%m-%d')=date_format(#{currentDate},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and date_format(learn_date,'%Y-%m')=date_format(#{currentDate},'%Y-%m')
+        </if>
+        <if test="type == 3">
+            and date_format(learn_date,'%Y')=date_format(#{currentDate},'%Y')
+        </if>
+    </select>
+</mapper>

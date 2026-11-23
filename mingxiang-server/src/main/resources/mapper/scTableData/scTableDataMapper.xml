@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.scTableData.dao.ScTableDataDao">
+    <resultMap type="com.sqx.modules.scTableData.vo.ScTableDataVo" id="ScTableDataVoMap">
+        <result property="dataId" column="data_id"/>
+        <result property="classId" column="class_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="status" column="status"/>
+        <result property="titleImg" column="title_img"/>
+        <result property="dataTitle" column="data_title"/>
+        <result property="phone" column="phone"/>
+        <result property="priceInfo" column="price_info"/>
+        <result property="rotationImg" column="rotation_img"/>
+        <result property="label" column="label"/>
+        <result property="browseCount" column="browse_count"/>
+        <result property="dataJson" column="data_json"
+                typeHandler="com.sqx.modules.utils.typeHandler.DataJsonListTypeHandler"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="className" column="class_name"/>
+        <result property="isFollow" column="isFollow"/>
+        <result property="distance" column="distance"/>
+    </resultMap>
+
+
+    <select id="getDataList" resultMap="ScTableDataVoMap">
+        select * from(
+        SELECT d.*,
+        u.user_name
+        <if test="lng!=null and lat!=null">
+            ,(st_distance (POINT (d.lng,d.lat),POINT(#{lng},#{lat}) ) *111195) AS distance
+        </if>
+        FROM sc_table_data d,
+        tb_user u
+
+        WHERE u.user_id = d.user_id and d.status = 2
+        and d.is_enable =1
+        and d.state = 1
+        <if test="scTableDataVo.userId!=null and scTableDataVo.userId!=''">
+            and d.user_id = #{userId}
+        </if>
+        <if test="scTableDataVo.dataTitle!=null and scTableDataVo.dataTitle!=''">
+            and d.data_title like concat("%",#{scTableDataVo.dataTitle},"%")
+        </if>
+        <if test="scTableDataVo.classId!=null and scTableDataVo.classId!=''">
+            and d.class_id = #{scTableDataVo.classId}
+        </if>
+        <if test="scTableDataVo.status!=null">
+            and d.status = #{scTableDataVo.status}
+        </if>
+        <if test="scTableDataVo.province!=null and scTableDataVo.province!=''">
+            and d.province = #{scTableDataVo.province}
+        </if>
+        <if test="scTableDataVo.city!=null and scTableDataVo.city!=''">
+            and d.city = #{scTableDataVo.city}
+        </if>
+        <if test="scTableDataVo.county!=null and scTableDataVo.county!=''">
+            and d.county = #{scTableDataVo.county}
+        </if>
+
+        ) t1
+        order by
+        <if test="createTimeSort!=null">
+            <if test="createTimeSort==1">
+                t1.create_time asc,
+            </if>
+            <if test="createTimeSort==2">
+                t1.create_time desc,
+            </if>
+        </if>
+        <if test="priceSort!=null">
+            <if test="priceSort==1">
+                t1.price_info asc,
+            </if>
+            <if test="priceSort==2">
+                t1.price_info desc,
+            </if>
+        </if>
+        <if test="distanceSort!=null">
+            <if test="lng!=null and lat!=null">
+                <if test="distanceSort==1">
+                    t1.distance asc,
+                </if>
+                <if test="distanceSort==2">
+                    t1.distance desc,
+                </if>
+            </if>
+        </if>
+        create_time desc
+
+    </select>
+    <select id="getMyDataList" resultMap="ScTableDataVoMap">
+        SELECT d.*,
+        u.user_name,
+        s.class_name
+        FROM sc_table_data d,
+        tb_user u,
+        sc_table_class s
+        WHERE u.user_id = d.user_id
+        AND d.class_id = s.class_id
+        AND d.user_id = #{userId}
+        <if test="classId!=null and classId!=''">
+            and d.class_id = #{classId}
+        </if>
+        <if test="status!=null and status!=''">
+            and d.status = #{status}
+        </if>
+        order by d.create_time desc
+
+    </select>
+    <select id="getDataById" resultMap="ScTableDataVoMap">
+        SELECT d.*,
+        u.user_name
+        <if test="userId!=null">
+            ,if((select count(0) from sc_follow c where c.user_id = #{userId} and type =1 and c.data_id =
+            #{dataId})>0,1,0) as
+            isFollow
+        </if>
+        FROM sc_table_data d,
+        tb_user u
+        WHERE u.user_id = d.user_id
+        and d.data_id = #{dataId}
+    </select>
+    <select id="adminGetDataList" resultMap="ScTableDataVoMap">
+        SELECT d.*,
+        u.user_name
+        FROM sc_table_data d,
+        tb_user u
+        WHERE u.user_id = d.user_id
+        <if test="scTableDataVo.userId!=null and scTableDataVo.userId!=''">
+            and d.user_id = #{scTableDataVo.userId}
+        </if>
+        <if test="scTableDataVo.dataTitle!=null and scTableDataVo.dataTitle!=''">
+            and d.data_title like concat("%",#{scTableDataVo.dataTitle},"%")
+        </if>
+        <if test="scTableDataVo.classId!=null and scTableDataVo.classId!=''">
+            and d.class_id = #{scTableDataVo.classId}
+        </if>
+        <if test="scTableDataVo.userName!=null and scTableDataVo.userName!=''">
+            and u.user_name like concat("%",#{scTableDataVo.userName},"%")
+        </if>
+        <if test="scTableDataVo.status!=null">
+            and d.status = #{scTableDataVo.status}
+        </if>
+        <if test="scTableDataVo.phone!=null and scTableDataVo.phone!=''">
+            and u.phone like concat("%",#{scTableDataVo.phone},"%")
+        </if>
+        <if test="scTableDataVo.province!=null and scTableDataVo.province!=''">
+            and d.province = #{scTableDataVo.province}
+        </if>
+        <if test="scTableDataVo.city!=null and scTableDataVo.city!=''">
+            and d.city like concat("%",#{scTableDataVo.city},"%")
+        </if>
+        <if test="scTableDataVo.county!=null and scTableDataVo.county!=''">
+            and d.county = #{scTableDataVo.county}
+        </if>
+        <if test="screen!=null">
+            <if test="screen==1">
+                order by create_time desc
+            </if>
+            <if test="screen==2">
+                order by d.browse_count DESC
+            </if>
+        </if>
+
+    </select>
+    <select id="getUserDataList" resultType="com.sqx.modules.scTableData.vo.ScTableDataVo">
+        SELECT d.*,
+               u.user_name
+        FROM sc_table_data d,
+             tb_user u
+        WHERE u.user_id = d.user_id
+          and u.user_id = #{userId}
+          and d.status = 2
+        order by d.update_time desc
+
+    </select>
+</mapper>
